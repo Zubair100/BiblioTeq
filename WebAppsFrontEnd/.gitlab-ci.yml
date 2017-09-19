@@ -1,0 +1,28 @@
+before_script:
+    - sudo apt-get install -y -qq ruby-dev nodejs
+    - sudo gem install dpl
+    - npm view @angular/cli >/dev/null || sudo npm install -g @angular/cli
+    - sudo npm install -g @angular/cli
+
+stages:
+    - build
+    - test
+    - deploy
+
+build:
+    stage: build
+    script:
+        - npm install
+        - ng build --prod
+
+test:
+    stage: test
+    script:
+        - echo "Testing..."
+
+deploy:
+    stage: deploy
+    only:
+        - master
+    script:
+        - sudo dpl --provider=heroku --app=biblioteq --api-key=$HEROKU_PRODUCTION_API_KEY

@@ -1,0 +1,64 @@
+
+<div class="container col-md-6">
+  <iframe class="frame" *ngIf="encodedPdf !== undefined" [src]="pdfSrc"></iframe>
+  <div class="frame" *ngIf="encodedPdf == undefined" style="background: lightgray">
+    <br/>
+    <div class="center-block col-md-4">
+      Select the exam paper PDF:
+    </div>
+    <input class="btn-group col-md-4" name="pdf" id="paperPdf" #file required type="file" accept="application/pdf" (change)="updateFile(file)">
+  </div>
+</div>
+
+
+<div class="container col-md-6">
+
+  <div class="alert alert-danger alert-dismissable" *ngIf="showInvalidFormAlert">
+    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+    Invalid submission
+  </div>
+
+  <form (submit)="onSubmit()" #paperForm="ngForm">
+
+    <div class="form-group col-md-6">
+      Course code that the module can be identified with:
+      <input class="form-control" name="code" id="paperCode" placeholder="C212" [(ngModel)]="courseCode"
+             required type="text" minlength="4"
+             #coursec="ngModel">
+    </div>
+
+
+
+    <div class="form-group col-md-6">
+      Year the paper was sat:
+      <input class="form-control" name="year" id="paperYear" placeholder="2016" [(ngModel)]="paperYear" required type="text">
+    </div>
+
+    <div class="form-group col-md-12">
+      Full title of the paper:
+      <input class="form-control" name="name" id="paperName" placeholder="Networks and Communications" [(ngModel)]="paperName" required type="text">
+    </div>
+
+    <div class="form-group col-md-12">
+      Comma separated list of all the questions:
+      <input class="form-control" name="questions" id="questionList" placeholder="1ai, 1aii, 1b, 1ci..." [(ngModel)]="questions" required type="text">
+    </div>
+
+
+    <div class="form-group">
+      <button class="form-control btn" type="submit" [disabled]="!paperForm.form.valid || encodedPdf == undefined">submit</button>
+    </div>
+
+    <div *ngIf="coursec.errors && (coursec.dirty || coursec.touched)"
+         class="alert alert-danger col-md-12">
+      <div [hidden]="!coursec.errors.required">
+        Course code is required
+      </div>
+      <div [hidden]="!coursec.errors.minlength">
+        Course code must be at least 4 characters long.
+      </div>
+    </div>
+
+  </form>
+</div>
+

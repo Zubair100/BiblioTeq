@@ -1,0 +1,48 @@
+before_script:
+    - sudo apt-get install -y -qq python3 python-pip python3-dev libpq-dev postgresql postgresql-contrib python-virtualenv ruby-dev
+#     fixes old version of node in ubuntu repos, only need to run once
+#     and is VERY slow
+#    - curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash
+#    - sudo apt-get install -y nodejs
+#    - npm view @angular/cli >/dev/null || sudo npm install -g @angular/cli
+    - sudo gem install dpl
+    - virtualenv -p python3 .
+    - source bin/activate
+    - pip install -r requirements.txt
+
+cache:
+    paths:
+        - "bin/"
+        - "include/"
+        - "share/"
+        - "lib/"
+        - "pip-selfcheck.json"
+    key: "$CI_COMMIT_REF_NAME"
+
+stages:
+    - build
+    - test
+    - deploy
+
+build:
+    stage: build
+    script:
+        - echo "Buidling..."
+
+test:
+    stage: test
+    script:
+        - echo "Testing..."
+        - cd BiblioProj
+        - python manage.py test
+    when: on_success
+
+deploy:
+    stage: deploy
+    only:
+        - master
+    script:
+        - sudo dpl --provider=heroku --app=biblioproj --api-key=$HEROKU_PRODUCTION_API_KEY
+
+after_script:
+    - deactivate

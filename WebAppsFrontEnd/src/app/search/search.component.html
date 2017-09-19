@@ -1,0 +1,37 @@
+<div class="container col-xs-8 col-xs-offset-2">
+
+  <div class="row page-header text-center">
+    <h1>
+      Find a paper
+    </h1>
+  </div>
+
+    <form name="search" (submit)="getPaper()" #searchForm="ngForm">
+
+      <div class="col-xs-6 form-group">
+        <label for="code">Course</label> <br />
+        <select class="btn btn-default dropdown-toggle well-sm"
+                name="code" [(ngModel)]="selectedCode" id="code" required
+                (change)="setDefaultYear()">
+          <option *ngFor="let code of courseCodes" [ngValue]="code">{{code}}</option>
+        </select>
+      </div>
+
+      <div class="col-xs-4 form-group">
+        <label for="year">Year</label> <br />
+        <select class="btn btn-default dropdown-toggle well-sm"
+                name="year" [(ngModel)]="selectedYear" id="year" required [disabled]="selectedCode == undefined">
+          <option *ngFor="let year of validPapers.get(selectedCode)" [ngValue]="year">{{year}}</option>
+        </select>
+      </div>
+
+      <div class="col-xs-2 form-group">
+        <button class="btn btn-success" role="button" type="submit" [disabled]="!searchForm.form.valid">
+          See Solutions
+        </button>
+      </div>
+
+    </form>
+
+  </div>
+

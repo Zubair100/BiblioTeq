@@ -1,0 +1,19 @@
+*.swp
+
+# Ignore the virtual environment
+bin/
+include/
+lib/
+share/
+pip-selfcheck.json
+
+# Ignore pycache
+__pycache__/
+
+# Ignore pycharm files
+.idea/
+
+#ignore .python, .env & .pyc files
+.Python
+.env
+*.pyc

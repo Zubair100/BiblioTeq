@@ -1,0 +1,9 @@
+Django==1.11.1
+django-cors-headers==2.1.0
+djangorestframework==3.6.3
+drf-pdf==0.2.0
+gunicorn==19.7.1
+psycopg2==2.7.1
+pytz==2017.2
+djangorestframework-jwt
+django-extensions

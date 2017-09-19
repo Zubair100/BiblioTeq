@@ -1,0 +1,89 @@
+<!-- PDF viewer -->
+<div class="container-fluid col-md-5">
+  <iframe class="frame" *ngIf="pdfSrc !== undefined" [src]="pdfSrc"></iframe>
+</div>
+
+
+<!-- Solutions Panel -->
+<div class="container-fluid col-md-7">
+  <div class="page-header text-center row">
+    <h2 class="">
+      {{paperCode}}: {{paperName}} Solutions
+      <button class="btn-sm btn-link" *ngIf="myPrivilege" (click)="deletePaper()">remove</button>
+    </h2>
+  </div>
+
+  <ng-container *ngFor="let sol of solutions">
+    <div class="container col-md-12">
+      <div class="form-group col-md-12">
+        <button class="form-control btn" (click)="toggleShow(sol)">{{sol.hidden ? "Show" : "Hide"}} solution for
+          {{sol.question}}
+        </button>
+      </div>
+      <div *ngIf="!sol.hidden">
+        <h3 class="page-header col-md-12">
+          {{sol.getSolutionHeader()}}
+        </h3>
+
+        <div>
+          <ng-container *ngFor="let answer of sol.displayAnswers()">
+
+            <!-- Answer that is displayed (when not editing) -->
+            <div class="panel panel-default col-md-12" *ngIf="!isEditing(answer)">
+              <div class="panel-heading">
+                Posted by: {{answer.username}} {{answer.timestamp | amTimeAgo}}
+              </div>
+              <div class="panel-body" [innerHTML]="answer.displayAnswer()"></div>
+              <div class="col-md-2">
+                <div *ngIf="!answer.canEdit(myId)">
+                  <p *ngIf="answer.canVote" class="btn-link" role="button" (click)="upVoteAnswer(sol, answer)">
+                    good answer | {{answer.numVotes}}
+                  </p>
+                  <p *ngIf="!answer.canVote" class="btn-link" role="button" (click)="downVoteAnswer(sol, answer)">
+                    undo | {{answer.numVotes}}
+                  </p>
+                </div>
+                <p *ngIf="answer.canEdit(myId)" class="answerScore">
+                  answer score | {{answer.numVotes}}
+                </p>
+              </div>
+
+              <div *ngIf="answer.canEdit(myId)">
+                <div class="btn-link col-md-1 col-md-offset-8" role="button" (click)="editAnswer(answer)">
+                  edit
+                </div>
+                <div class="btn-link col-md-1" role="button" (click)="deleteAnswer(answer, sol)">delete</div>
+              </div>
+
+            </div>
+
+          </ng-container>
+        </div>
+
+        <!-- Stuff that is displayed when editing an answer -->
+        <div class="col-md-12" [hidden]="editingAnswer == null">
+          <quill-editor #ansEditor (onEditorCreated)="setAnswerEditor(ansEditor)"></quill-editor>
+        </div>
+
+        <div class="col-md-6" *ngIf="editingAnswer != null">
+          <button (click)="submitUpdatedAnswer()" class="btn btn-success">update</button>
+          <button (click)="cancelEdit()" class="btn btn-danger">cancel</button>
+        </div>
+
+        <!-- Show more solutions -->
+        <div *ngIf="sol.getShowMore()">
+          <button class="btn-link col-md-12" role="button" (click)="sol.showMore()">show more answers</button>
+        </div>
+
+        <!-- Answer submission: All solutions must be shown before one can be submitted -->
+        <div class="col-md-12" *ngIf="sol.canSubmitNewAnswer(myId) && !sol.getShowMore()">
+          <quill-editor #submissionField [placeholder]="'Submit an answer...'"></quill-editor>
+          <button (click)="submitAnswer(sol, submissionField)" class="btn btn-primary">Submit Answer</button>
+        </div>
+
+
+      </div>
+      <br/>
+    </div>
+  </ng-container>
+</div>
